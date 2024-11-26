@@ -1,5 +1,11 @@
-import { signInWithGoogle } from "../../firebase/providers";
+import {
+  registerUserWithEmailPassword,
+  signInWithGoogle,
+} from "../../firebase/providers";
 import { checkingCredentials, login } from "./authSlice";
+
+//Un thunk es una función que se puede despachar en Redux y que permite manejar lógica asíncrona.
+//Es una forma de encapsular lógica de acción asincrónica
 
 export const checkingAuthentication = (email, password) => {
   return async (dispatch) => {
@@ -11,8 +17,22 @@ export const startGoogleSignIn = () => {
   return async (dispatch) => {
     dispatch(checkingCredentials());
     const result = await signInWithGoogle();
-    console.log("🚀 ~ return ~ result:", result);
     if (!result.ok) return dispatch(logout(result.errorMessage));
     dispatch(login(result));
+  };
+};
+
+export const startCreatingUserWithEmailPass = ({
+  email,
+  password,
+  diplayName,
+}) => {
+  return async (dispatch) => {
+    dispatch(checkingCredentials());
+    const resp = await registerUserWithEmailPassword({
+      email,
+      password,
+      diplayName,
+    });
   };
 };

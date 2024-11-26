@@ -1,7 +1,10 @@
 import { Link as RouterLink } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { Button, Grid, Link, TextField, Typography } from "@mui/material";
 import { AuthLayout } from "../layout/AuthLayout";
 import { useForm } from "../../hooks";
+import { useState } from "react";
+import { startCreatingUserWithEmailPass } from "../../store/auth/thunks";
 
 const formData = {
   email: "test@test.com",
@@ -19,6 +22,8 @@ const formValidations = {
 };
 
 export const RegisterPage = () => {
+  const dispatch = useDispatch();
+  const [formSubmitted, setFormSubmitted] = useState(false);
   const {
     formState,
     displayName,
@@ -33,8 +38,11 @@ export const RegisterPage = () => {
 
   const onSubmit = (event) => {
     event.preventDefault();
-    console.log(formState);
+    setFormSubmitted(true);
+    if (!isFormValid) return;
+    dispatch(startCreatingUserWithEmailPass(formState));
   };
+
   return (
     <AuthLayout title="Crear cuenta">
       <h1>form valid {isFormValid ? "valido" : "invalido"}</h1>
@@ -48,7 +56,7 @@ export const RegisterPage = () => {
               name="displayName"
               value={displayName}
               onChange={onInputChange}
-              error={!!displayNameValid}
+              error={!!displayNameValid && formSubmitted} //cuando postea el form, ejecuta la validacion y muestra el error si es que hay
               helperText={displayNameValid}
               fullWidth
             />
@@ -62,7 +70,7 @@ export const RegisterPage = () => {
               name="email"
               value={email}
               onChange={onInputChange}
-              error={!!emailValid}
+              error={!!emailValid && formSubmitted}
               helperText={emailValid}
               fullWidth
             />
@@ -76,7 +84,7 @@ export const RegisterPage = () => {
               name="password"
               value={password}
               onChange={onInputChange}
-              error={!!passwordValid}
+              error={!!passwordValid && formSubmitted}
               helperText={passwordValid}
               fullWidth
             />
