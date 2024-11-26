@@ -6,15 +6,16 @@ import { useForm } from "../../hooks";
 const formData = {
   email: "test@test.com",
   password: "test123",
-  displayName: "test@test.com",
+  displayName: "test",
 };
 
 const formValidations = {
-  email: [(v) => v.includes("@") || "El correo es requerido"],
+  email: [(v) => v.includes("@"), "El correo es requerido"],
   password: [
-    (v) => v.length > 6 || "La contraseña debe tener mas de 6 caracteres",
+    (v) => v.length >= 6,
+    "La contraseña debe tener mas de 6 caracteres",
   ],
-  displayName: [(v) => v.length > 1 || "El nombre es requerido"],
+  displayName: [(v) => v.length >= 1, "El nombre es requerido"],
 };
 
 export const RegisterPage = () => {
@@ -27,9 +28,8 @@ export const RegisterPage = () => {
     emailValid,
     passwordValid,
     onInputChange,
+    isFormValid,
   } = useForm(formData, formValidations);
-
-  console.log(displayNameValid);
 
   const onSubmit = (event) => {
     event.preventDefault();
@@ -37,6 +37,7 @@ export const RegisterPage = () => {
   };
   return (
     <AuthLayout title="Crear cuenta">
+      <h1>form valid {isFormValid ? "valido" : "invalido"}</h1>
       <form onSubmit={onSubmit}>
         <Grid container>
           <Grid item xs={12} sx={{ mt: 2 }}>
@@ -47,7 +48,7 @@ export const RegisterPage = () => {
               name="displayName"
               value={displayName}
               onChange={onInputChange}
-              error={!displayNameValid}
+              error={!!displayNameValid}
               helperText={displayNameValid}
               fullWidth
             />
@@ -61,7 +62,7 @@ export const RegisterPage = () => {
               name="email"
               value={email}
               onChange={onInputChange}
-              error={!emailValid}
+              error={!!emailValid}
               helperText={emailValid}
               fullWidth
             />
@@ -75,7 +76,7 @@ export const RegisterPage = () => {
               name="password"
               value={password}
               onChange={onInputChange}
-              error={!passwordValid}
+              error={!!passwordValid}
               helperText={passwordValid}
               fullWidth
             />
