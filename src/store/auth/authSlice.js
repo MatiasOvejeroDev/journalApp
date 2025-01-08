@@ -1,5 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+//Un slice es un objeto que contiene una parte del estado de la aplicación y las funciones que modifican ese estado.
+
 export const authSlice = createSlice({
   name: "auth",
   initialState: {

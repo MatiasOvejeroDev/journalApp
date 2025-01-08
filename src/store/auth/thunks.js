@@ -25,14 +25,13 @@ export const startGoogleSignIn = () => {
 export const startCreatingUserWithEmailPass = ({
   email,
   password,
-  diplayName,
+  displayName,
 }) => {
   return async (dispatch) => {
     dispatch(checkingCredentials());
-    const resp = await registerUserWithEmailPassword({
-      email,
-      password,
-      diplayName,
-    });
+    const { ok, uid, photoURL, errorMessage } =
+      await registerUserWithEmailPassword({ email, password, displayName });
+    if (!ok) return dispatch(logout({ errorMessage }));
+    dispatch(login({ uid, photoURL, email, displayName }));
   };
 };

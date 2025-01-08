@@ -2,8 +2,11 @@ import {
   GoogleAuthProvider,
   createUserWithEmailAndPassword,
   signInWithPopup,
+  updateProfile,
 } from "firebase/auth";
 import { firebaseAuth } from "./config";
+
+//Cada provider sera consumido y utilizado por los thunks para realizar la autenticacion
 
 const googleProvider = new GoogleAuthProvider();
 
@@ -24,8 +27,6 @@ export const signInWithGoogle = async () => {
     // Handle Errors here.
     const errorCode = error.code;
     const errorMessage = error.message;
-    // The AuthCredential type that was used.
-    // const credential = GoogleAuthProvider.credentialFromError(error);
     return {
       ok: false,
       errorCode,
@@ -40,14 +41,25 @@ export const registerUserWithEmailPassword = async ({
   displayName,
 }) => {
   try {
-    createUserWithEmailAndPassword(firebaseAuth, email, password);
     const resp = await createUserWithEmailAndPassword(
       firebaseAuth,
       email,
       password
     );
-    console.log("🚀 ~ resp:", resp);
+
     const { uid, photoURL } = resp.user;
+
+    await updateProfile(firebaseAuth.currentUser, {
+      displayName,
+    });
+
+    return {
+      ok: true,
+      uid,
+      photoURL,
+      email,
+      displayName,
+    };
   } catch (error) {
     console.log(error);
     return {
